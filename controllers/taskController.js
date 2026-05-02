@@ -15,15 +15,17 @@ const getTasks = async (req, res) => {
         let tasks;
 
         if (req.user.role === "admin") {
-            tasks = await Task.find(filter).populate(
-                "assignedTo",
-                "name email profileImageUrl"
-            );
+            tasks = await Task.find(filter).populate({
+                path: "assignedTo",
+                model: "User",
+                select: "name email profileImageUrl",
+            });
         } else {
-            tasks = await Task.find({ ...filter, assignedTo: req.user._id }).populate(
-                "assignedTo",
-                "name email profileImageUrl"
-            );
+            tasks = await Task.find({ ...filter, assignedTo: req.user._id }).populate({
+                path: "assignedTo",
+                model: "User",
+                select: "name email profileImageUrl",
+            });
         }
 
         // Add completed todoChecklist count to each task
